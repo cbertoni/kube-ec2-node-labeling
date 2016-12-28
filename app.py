@@ -31,9 +31,9 @@ def main(infra, kube, prefix):
 
 if __name__ == '__main__':
 
-    vpc_id = environ.get('VPC')
-    region = environ.get('REGION')
-    prefix = environ.get('LABEL_PREFIX')
+    vpc_id = environ['VPC']
+    region = environ['REGION']
+    prefix = environ['LABEL_PREFIX']
 
     infra = Ec2(region, vpc_id)
     kube = Kubernetes()
