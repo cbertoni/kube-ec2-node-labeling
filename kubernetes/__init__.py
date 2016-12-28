@@ -1,5 +1,6 @@
 import pykube
 
+
 class KubernetesLabels():
 
     node_object = None
@@ -23,8 +24,7 @@ class KubernetesLabels():
 
     def get_keys_by_prefix(self, prefix):
         return filter(lambda x: x.startswith(prefix),
-            self.node_object.obj['metadata']['labels'].keys())
-
+                      self.node_object.obj['metadata']['labels'].keys())
 
 
 class KubernetesNode():
@@ -53,4 +53,3 @@ class Kubernetes():
         nodes = [KubernetesNode(node) for node in pykube.Node.objects(self.kube)]
 
         return nodes
-

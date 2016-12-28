@@ -4,6 +4,7 @@ from os import environ
 from re import sub
 from time import sleep
 
+
 def main(infra, kube, prefix):
 
     while True:
@@ -22,7 +23,8 @@ def main(infra, kube, prefix):
                 labels.remove_label(label)
 
             for tag_key, tag_value in tags.iteritems():
-                labels.add_label('%s/%s' % (prefix, sub('[:/\s]', '-', tag_key)), sub('[:/\s]', '-', tag_value[:63]))
+                labels.add_label('%s/%s' % (prefix, sub('[:/\s]', '-', tag_key)),
+                                 sub('[:/\s]', '-', tag_value[:63]))
 
             labels.commit()
 

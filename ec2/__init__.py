@@ -30,4 +30,3 @@ class Ec2():
         )
 
         return Ec2VM(reservations[0].instances[0])
-
