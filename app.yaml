@@ -1,0 +1,105 @@
+kind: "Template"
+apiVersion: "v1"
+metadata:
+  name: "kube-ec2-node-labeling"
+  annotations:
+    description: "Label Kubernetes nodes with information from EC2 tags"
+    version: "0.1"
+    iconClass: "fa fa-amazon"
+    tags: "ec2"
+objects:
+  -
+    kind: "ServiceAccount"
+    apiVersion: "v1"
+    metadata:
+      name: "node-labeler"
+  -
+    kind: "DeploymentConfig"
+    apiVersion: "v1"
+    metadata:
+      name: "kube-ec2-node-labeling-${APP_ID}"
+    spec:
+      strategy:
+        type: Recreate
+      triggers:
+        -
+          type: "ConfigChange"
+      replicas: 1
+      selector:
+        name: "kube-ec2-node-labeling-${APP_ID}"
+        context: "service"
+      template:
+        metadata:
+          labels:
+            name: "kube-ec2-node-labeling-${APP_ID}"
+            context: "service"
+        spec:
+          containers:
+            -
+              name: "kube-ec2-node-labeling-${APP_ID}"
+              image: "luisbarrueco/kube-ec2-node-labeling:latest"
+              resources: {}
+              terminationMessagePath: "/dev/termination-log"
+              imagePullPolicy: Always
+              securityContext:
+                capabilities: {}
+                privileged: false
+              env:
+                -
+                  name: PYKUBE_KUBERNETES_SERVICE_HOST
+                  #value: kubernetes.default.svc.cluster.local
+                  value: "${PYKUBE_KUBERNETES_SERVICE_HOST}"
+                -
+                  name: PYKUBE_KUBERNETES_SERVICE_PORT
+                  value: "${PYKUBE_KUBERNETES_SERVICE_PORT}"
+                -
+                  name: REGION
+                  value: "${REGION}"
+                -
+                  name: VPC
+                  value: "${VPC}"
+                -
+                  name: LABEL_PREFIX
+                  value: "${LABEL_PREFIX}"
+              volumeMounts:
+                - name: aws-config-volume
+                  mountPath: /.aws
+                  readOnly: true
+          volumes:
+            - name: aws-config-volume
+              secret:
+                secretName: aws-config
+          serviceAccountName: node-labeler
+          restartPolicy: "Always"
+          dnsPolicy: "ClusterFirst"
+    status: {}
+parameters:
+  -
+    name: "APP_ID"
+    description: "Application execution ID"
+    generate: "expression"
+    from: "[a-z0-9]{3}"
+    required: true
+  -
+    name: "PYKUBE_KUBERNETES_SERVICE_HOST"
+    value: "kubernetes.default"
+    required: true
+  -
+    name: "PYKUBE_KUBERNETES_SERVICE_PORT"
+    value: "443"
+    required: true
+  -
+    name: "REGION"
+    value: "us-east-1"
+    required: true
+  -
+    name: "VPC"
+    value: "vpc-838c21e5"
+    required: true
+  -
+    name: "LABEL_PREFIX"
+    value: "node-tags.alpha.olapic.com"
+    required: true
+labels:
+  vendor: "Olapic"
+  service: "kube-ec2-node-labeling"
