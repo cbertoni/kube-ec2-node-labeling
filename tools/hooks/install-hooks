@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# Get base directory of this script
+BASE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# This script is two levels inside the repo root
+REPO_ROOT=${BASE_DIR}/../../
+
+pushd "$REPO_ROOT"
+
+ln -sv ../../tools/hooks/pre-commit.local ./.git/hooks/pre-commit
+echo "pre-commit hook installed"
+
+popd
