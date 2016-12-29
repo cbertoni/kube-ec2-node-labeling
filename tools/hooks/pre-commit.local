@@ -76,6 +76,6 @@ do
 done
 
 # Run unit tests
-pytest --cov-report term --cov
+pytest --cov-report term --cov --ignore=venv
 
 exit $STATUS
