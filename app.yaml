@@ -47,7 +47,6 @@ objects:
               env:
                 -
                   name: PYKUBE_KUBERNETES_SERVICE_HOST
-                  #value: kubernetes.default.svc.cluster.local
                   value: "${PYKUBE_KUBERNETES_SERVICE_HOST}"
                 -
                   name: PYKUBE_KUBERNETES_SERVICE_PORT
