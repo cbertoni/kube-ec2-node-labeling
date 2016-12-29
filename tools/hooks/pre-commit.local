@@ -75,4 +75,7 @@ do
     fi
 done
 
+# Run unit tests
+pytest --cov-report term --cov
+
 exit $STATUS
